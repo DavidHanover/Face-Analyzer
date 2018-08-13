@@ -1,6 +1,14 @@
+@font-face {
+  font-family: 'IBMPlexMono';
+  src: url('./fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf');
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'IBMPlexMono', 'Courier New', Courier, sans-serif;
   background: linear-gradient(to right, #ffa17f, #00223e); 
+}
+button{
+	cursor: pointer;
 }
