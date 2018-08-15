@@ -19,15 +19,20 @@ constructor(){
   super();
   this.state = {
     input:'',
+    imageURL:''
   }
 }
 
 onInputChange = (e) =>{
-  console.log(e.target.value);
+  this.setState({input: e.target.value});
 }
 
 onSubmit = (e) => {
-  app.models.predict("a403429f2ddf4b49b307e318f00e528b", "https://samples.clarifai.com/face-det.jpg").then(
+  this.setState({imageURL: this.state.input});
+  app.models.predict(
+    Clarifai.COLOR_MODEL,
+    this.state.input
+    ).then(
     function(response) {
   console.log(response);
       // do something with response
@@ -48,7 +53,7 @@ onSubmit = (e) => {
       <Logo/>
       <Rank />
       <ImageLinkForm onInputChange={this.onInputChange} onSubmit = {this.onSubmit}/>
-      <FaceRecognition/>         
+      <FaceRecognition imageURL = {this.state.imageURL}/>         
       </div>
     );
   }
