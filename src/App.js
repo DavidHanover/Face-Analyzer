@@ -19,12 +19,29 @@ constructor(){
   super();
   this.state = {
     input:'',
-    imageURL:''
+    imageURL:'',
+    box:{}
   }
 }
 
-onInputChange = (e) =>{
-  this.setState({input: e.target.value});
+onInputChange = e => this.setState({input: e.target.value});
+
+calculateBox = (data) =>{
+  const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+  const urlImage = document.getElementById('inputImage');
+  const imgWidth = Number(urlImage.width);
+  const imgHeight = Number(urlImage.height);
+  return {
+    leftCol: clarifaiFace.left_col * imgWidth,
+    topRow: clarifaiFace.top_row * imgHeight,
+    rightCol: imgWidth - clarifaiFace.right_col * imgWidth,
+    bottomRow: imgHeight - clarifaiFace.bottom_row * imgHeight
+  }
+}
+
+displayFaceBox = (box) => {
+  console.log(box);
+  this.setState({ box });
 }
 
 onSubmit = (e) => {
@@ -32,15 +49,8 @@ onSubmit = (e) => {
   app.models.predict(
     Clarifai.FACE_DETECT_MODEL,
     this.state.input
-    ).then(
-    function(response) {
-  console.log(response.outputs[0].data.regions[0].region_info.bounding_box);
-      // do something with response
-    },
-    function(err) {
-      // there was an error
-    }
-  );
+    ).then(response => this.displayFaceBox(this.calculateBox(response)))
+     .catch(err => console.log);
 }
 
   render() {
@@ -53,12 +63,11 @@ onSubmit = (e) => {
       <Logo/>
       <Rank />
       <ImageLinkForm onInputChange={this.onInputChange} onSubmit = {this.onSubmit}/>
-      <FaceRecognition imageURL = {this.state.imageURL}/>         
+      <FaceRecognition box = {this.state.box} imageURL = {this.state.imageURL}/>         
       </div>
     );
   }
 }
-
 
 
 export default App;
