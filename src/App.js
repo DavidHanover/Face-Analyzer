@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Clarifai from 'clarifai';
+import SignIn from './components/SignIn/SignIn';
 import Navigation from './components/Navigation/Navigation';
+import Register from './components/Register/Register';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
@@ -20,7 +22,9 @@ constructor(){
   this.state = {
     input:'',
     imageURL:'',
-    box:{}
+    box:{},
+    route: 'signIn',
+    isSignedIn: false
   }
 }
 
@@ -40,34 +44,45 @@ calculateBox = (data) =>{
 }
 
 displayFaceBox = (box) => {
-  console.log(box);
   this.setState({ box });
 }
 
 onSubmit = (e) => {
-  this.setState({imageURL: this.state.input});
-  app.models.predict(
-    Clarifai.FACE_DETECT_MODEL,
-    this.state.input
-    ).then(response => this.displayFaceBox(this.calculateBox(response)))
-     .catch(err => console.log);
+  const input = this.state.input;
+  this.setState({imageURL : input});
+  app.models.predict(Clarifai.FACE_DETECT_MODEL, input)
+  .then(response => this.displayFaceBox(this.calculateBox(response)))
+  .catch(err => console.log);
 }
 
-  render() {
-    return (      
-      <div className="App">
-      <Particles className='particles'
-              params={particlesOptions}
-            />
-      <Navigation/>
-      <Logo/>
-      <Rank />
-      <ImageLinkForm onInputChange={this.onInputChange} onSubmit = {this.onSubmit}/>
-      <FaceRecognition box = {this.state.box} imageURL = {this.state.imageURL}/>         
+routeChange = (route) => {
+  this.setState({route: route});
+  route === 'home' 
+  ? this.setState({isSignedIn : true})
+  : this.setState({isSignedIn : false});
+}
+
+render() {
+  const { isSignedIn, imageURL, route, box } = this.state;
+  return (      
+    <div className="App">
+    <Particles className='particles' params={particlesOptions}/>
+     <Navigation routeChange = {this.routeChange} isSignedIn = {isSignedIn}/>
+      { route === 'signIn'
+        ? <SignIn routeChange = {this.routeChange}/> 
+        : route === 'home'
+        ? <div>
+            <Logo/>
+            <Rank />
+            <ImageLinkForm onInputChange={this.onInputChange} onSubmit = {this.onSubmit}/>
+            <FaceRecognition box = {box} imageURL = {imageURL}/>
+          </div>
+         : route === 'register'
+         ? <Register/>
+         : <div>Wow, this is broken.</div>           
+        }    
       </div>
-    );
+      );
   }
 }
-
-
 export default App;
