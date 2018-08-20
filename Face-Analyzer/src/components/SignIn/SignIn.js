@@ -3,32 +3,44 @@ import React from 'react';
 class SignIn extends React.Component{
 
 	constructor(props){
-		super();
+		super(props);
 		this.state = {
 			signInEmail: '',
 			signInPassword:''
 		}
+	}
+	
+	onPasswordChange = (e) => {
+		this.setState({signInPassword: e.target.value});
 	}
 
 	onEmailChange = (e) => {
 		this.setState({signInEmail: e.target.value});
 	}
 
-	onPasswordChange = (e) => {
-		this.setState({signInPassword: e.target.value});
-	}
-
 	onSubmitSignIn = () => {
-		console.log(this.state);
-		this.props.routeChange('home')
+		fetch('http://localhost:3000/signin', {
+			method:'post',
+			headers:{'Content-Type':'application/json'},
+			body: JSON.stringify({
+				email: this.state.signInEmail,
+				password: this.state.signInPassword
+			})
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data === 'success'){
+					this.props.routeChange('home');
+				}
+			})
 	}
 
 	render(){
-		const {onRouteChange} = this.props;
+		const { routeChange } = this.props;
 			return(
 				<article className="br5 ba b--black-10 shadow-5 mv4 w-100 w-50-m w-25-1 mw6 center">
 					<main className="pa4 black-80">
-					  <form className="measure">
+					  <div className="measure">
 					    <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
 					      <legend className="f4 fw6 ph0 mh0">Sign In</legend>
 					      <div className="mt3">
@@ -41,12 +53,12 @@ class SignIn extends React.Component{
 					      </div>
 					    </fieldset>
 					    <div className="">
-					      <input onClick = {this.onSubmitSignIn} className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Sign in"/>
+					      <input onClick = {this.onSubmitSignIn}  className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Sign in"/>
 					    </div>
 					    <div className="lh-copy mt3">
-					      <p className="f6 link dim black db hover-pointer pointer" onClick = {() => this.p.routeChange('register')}>Register</p>
+					      <p className="f6 link dim black db hover-pointer pointer" onClick = {() => routeChange('register')}>Register</p>
 					    </div>
-					  </form>
+					  </div>
 					</main>
 				</article>
 		);
