@@ -24,10 +24,26 @@ constructor(){
     imageURL:'',
     box:{},
     route: 'signIn',
-    isSignedIn: false
+    isSignedIn: false,
+    user: {
+      id: '',
+      name: '',
+      email:'',
+      entries: 0,
+      joined: ''
+    }
   }
 }
 
+loadUser = (u) => {
+  this.setState({user: {
+        id: u.id,
+        name: u.name,
+        email:u.email,
+        entries: u.entries,
+        joined: u.joined
+      }})
+}
 
 onInputChange = e => this.setState({input: e.target.value});
 
@@ -70,16 +86,16 @@ render() {
     <Particles className='particles' params={particlesOptions}/>
      <Navigation routeChange = {this.routeChange} isSignedIn = {isSignedIn}/>
       { route === 'signIn'
-        ? <SignIn routeChange = {this.routeChange}/> 
+        ? <SignIn routeChange = {this.routeChange} loadUser = {this.loadUser}/> 
         : route === 'home'
         ? <div>
             <Logo/>
-            <Rank />
+            <Rank name={this.state.user.name} entries={this.state.user.entries}/>
             <ImageLinkForm onInputChange={this.onInputChange} onSubmit = {this.onSubmit}/>
             <FaceRecognition box = {box} imageURL = {imageURL}/>
           </div>
          : route === 'register'
-         ? <Register/>
+         ? <Register routeChange = {this.routeChange} loadUser = {this.loadUser}/>
          : <div>Wow, this is broken.</div>           
         }    
       </div>
