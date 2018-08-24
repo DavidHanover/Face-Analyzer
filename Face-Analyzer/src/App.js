@@ -68,7 +68,20 @@ onSubmit = (e) => {
   const input = this.state.input;
   this.setState({imageURL : input});
   app.models.predict(Clarifai.FACE_DETECT_MODEL, input)
-  .then(response => this.displayFaceBox(this.calculateBox(response)))
+  .then((response) => {
+    if(response){
+      fetch('http://localhost:3000/image', {
+      method:'put',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        id: this.state.user.id
+      })
+    })
+      .then(response => response.json())
+      .then(count => {
+        this.setState(Object.assign(this.state.user, {entries: count}))
+      });
+    }this.displayFaceBox(this.calculateBox(response))})
   .catch(err => console.log);
 }
 
