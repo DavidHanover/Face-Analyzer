@@ -32,7 +32,7 @@ class SignIn extends React.Component{
 				if (user.id){
 					this.props.loadUser(user);
 					this.props.routeChange('home');
-				}
+				} else { alert('Bad Password or Email!');}
 			})
 	}
 
