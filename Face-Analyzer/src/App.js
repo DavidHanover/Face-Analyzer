@@ -15,6 +15,21 @@ const app = new Clarifai.App({
   apiKey: 'f64c6cb8448a431588ff2321664f755c'
 });
 
+const initialState = {
+    input:'',
+    imageURL:'',
+    box:{},
+    route: 'signIn',
+    isSignedIn: false,
+    user: {
+      id: '',
+      name: '',
+      email:'',
+      entries: 0,
+      joined: ''
+    }
+  };
+
 
 class App extends Component {
 constructor(){
@@ -65,7 +80,7 @@ displayFaceBox = (box) => {
 }
 
 onSubmit = (e) => {
-  const input = this.state.input;
+  const {input, user} = this.state;
   this.setState({imageURL : input});
   app.models.predict(Clarifai.FACE_DETECT_MODEL, input)
   .then((response) => {
@@ -74,22 +89,25 @@ onSubmit = (e) => {
       method:'put',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        id: this.state.user.id
+        id: user.id
       })
     })
       .then(response => response.json())
       .then(count => {
-        this.setState(Object.assign(this.state.user, {entries: count}))
-      });
+        this.setState(Object.assign(user, {entries: count}))
+      })
+      .catch(err => console.log);
     }this.displayFaceBox(this.calculateBox(response))})
   .catch(err => console.log);
 }
 
 routeChange = (route) => {
-  this.setState({route: route});
-  route === 'home' 
-  ? this.setState({isSignedIn : true})
-  : this.setState({isSignedIn : false});
+  if (route === 'home'){
+    this.setState({isSignedIn : true})
+  } else {
+    this.setState(initialState)
+  }
+  this.setState({route : route})
 }
 
 render() {

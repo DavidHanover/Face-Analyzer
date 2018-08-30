@@ -7,7 +7,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'IBMPlexMono', 'Courier New', Courier, sans-serif;
-  background: linear-gradient(to right, #ffa17f, #00223e); 
+  background: linear-gradient(to right, #00223e, #ffa17f); 
 }
 button{
 	cursor: pointer;
