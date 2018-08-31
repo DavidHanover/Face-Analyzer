@@ -27,6 +27,7 @@ app.post('/signin', (req, res) => {signin.handleSignin(req, res, bcrypt, db)})
 app.post('/register', (req, res) => {register.handleRegister(req, res, bcrypt, db)})
 app.get('/profile/:id', (req, res) => {profile.handleGetProfile(req, res, db)})
 app.put('/image', (req, res) => {image.handleImage(req, res, db)})
+app.post('/imageurl', (req, res) => {image.handleAPICall(req, res, db)})
 
 const po = 3000;
 app.listen(po, () => {
