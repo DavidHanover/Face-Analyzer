@@ -79,7 +79,7 @@ displayFaceBox = (box) => {
 onSubmit = (e) => {
   const {input, user} = this.state;
   this.setState({imageURL : input});
-  fetch('http://localhost:3000/imageurl', {
+  fetch('https://blooming-plateau-12926.herokuapp.com/imageurl', {
       method:'post',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -89,7 +89,7 @@ onSubmit = (e) => {
   .then(response => response.json())
   .then((response) => {
     if(response){
-      fetch('http://localhost:3000/image', {
+      fetch('https://blooming-plateau-12926.herokuapp.com/image', {
       method:'put',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
